@@ -101,7 +101,7 @@ const Feedback = async ({ params }: RouteParams) => {
           </Link>
         </Button>
 
-        <Button className="btn-primary flex-1">
+        <Button className="btn-primary flex-1" disabled>
           <Link
             href={`/interview/${id}`}
             className="flex w-full justify-center"
