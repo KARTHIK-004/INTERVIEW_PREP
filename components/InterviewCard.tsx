@@ -5,8 +5,9 @@ import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import DisplayTechIcons from "@/components/DisplayTechIcons";
+import { getFeedbackByInterviewId } from "@/lib/actions/interview.action";
 
-const InterviewCard = ({
+const InterviewCard = async ({
   interviewId,
   userId,
   role,
@@ -14,7 +15,13 @@ const InterviewCard = ({
   techstack,
   createdAt,
 }: InterviewCardProps) => {
-  const feedback = null as Feedback | null;
+  const feedback =
+    userId && interviewId
+      ? await getFeedbackByInterviewId({
+          interviewId,
+          userId,
+        })
+      : null;
 
   const normalizedType = /mix/gi.test(type) ? "Mixed" : type;
 

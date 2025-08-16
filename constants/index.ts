@@ -59,37 +59,34 @@ End the conversation on a polite and positive note.
 };
 
 export const feedbackSchema = z.object({
-  totalScore: z.number(),
-  categoryScores: z.tuple([
-    z.object({
-      name: z.literal("Communication Skills"),
-      score: z.number(),
-      comment: z.string(),
-    }),
-    z.object({
-      name: z.literal("Technical Knowledge"),
-      score: z.number(),
-      comment: z.string(),
-    }),
-    z.object({
-      name: z.literal("Problem Solving"),
-      score: z.number(),
-      comment: z.string(),
-    }),
-    z.object({
-      name: z.literal("Cultural Fit"),
-      score: z.number(),
-      comment: z.string(),
-    }),
-    z.object({
-      name: z.literal("Confidence and Clarity"),
-      score: z.number(),
-      comment: z.string(),
-    }),
-  ]),
-  strengths: z.array(z.string()),
-  areasForImprovement: z.array(z.string()),
-  finalAssessment: z.string(),
+  totalScore: z.number().describe("Overall score from 0 to 100"),
+  communicationSkills: z.object({
+    score: z.number().describe("Score from 0 to 100"),
+    comment: z.string().describe("Detailed feedback comment"),
+  }),
+  technicalKnowledge: z.object({
+    score: z.number().describe("Score from 0 to 100"),
+    comment: z.string().describe("Detailed feedback comment"),
+  }),
+  problemSolving: z.object({
+    score: z.number().describe("Score from 0 to 100"),
+    comment: z.string().describe("Detailed feedback comment"),
+  }),
+  culturalFit: z.object({
+    score: z.number().describe("Score from 0 to 100"),
+    comment: z.string().describe("Detailed feedback comment"),
+  }),
+  confidenceAndClarity: z.object({
+    score: z.number().describe("Score from 0 to 100"),
+    comment: z.string().describe("Detailed feedback comment"),
+  }),
+  strengths: z
+    .string()
+    .describe("Main strengths observed (as a single string)"),
+  areasForImprovement: z
+    .string()
+    .describe("Areas for improvement (as a single string)"),
+  finalAssessment: z.string().describe("Overall assessment and recommendation"),
 });
 
 export const mappings = {

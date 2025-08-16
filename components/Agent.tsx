@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { vapi } from "@/lib/vapi.sdk";
 import { interviewer } from "@/constants";
+import { createFeedback } from "@/lib/actions/interview.action";
 
 enum CallStatus {
   INACTIVE = "INACTIVE",
@@ -30,7 +31,6 @@ const Agent = ({
   const router = useRouter();
 
   const [isSpeaking, setIsSpeaking] = useState(false);
-  const [lastMessage, setLastMessage] = useState<string>("");
   const [messages, setMessages] = useState<SavedMessage[]>([]);
   const [callStatus, setCallStatus] = useState<CallStatus>(CallStatus.INACTIVE);
 
@@ -51,12 +51,10 @@ const Agent = ({
     };
 
     const onSpeechStart = () => {
-      console.log("speech start");
       setIsSpeaking(true);
     };
 
     const onSpeechEnd = () => {
-      console.log("speech end");
       setIsSpeaking(false);
     };
 
@@ -81,23 +79,25 @@ const Agent = ({
     };
   }, []);
 
-  const handleGenerateFeedback = async (messages: SavedMessage[]) => {
-    console.log("handleGenerateFeedback");
+  useEffect(() => {
+    const handleGenerateFeedback = async (messages: SavedMessage[]) => {
+      console.log("handleGenerateFeedback");
 
-    const { success, id } = {
-      success: true,
-      id: "feadback-id",
+      const { success, feedbackId: id } = await createFeedback({
+        interviewId: interviewId!,
+        userId: userId!,
+        transcript: messages,
+        feedbackId,
+      });
+
+      if (success && id) {
+        router.push(`/interview/${interviewId}/feedback`);
+      } else {
+        console.log("Error saving feedback");
+        router.push("/");
+      }
     };
 
-    if (success && id) {
-      router.push(`/interview/${interviewId}/feedback`);
-    } else {
-      console.log("Error saving feedback");
-      router.push("/");
-    }
-  };
-
-  useEffect(() => {
     if (callStatus === CallStatus.FINISHED) {
       if (type === "generate") {
         router.push("/");
@@ -105,7 +105,7 @@ const Agent = ({
         handleGenerateFeedback(messages);
       }
     }
-  }, [messages, callStatus, type, userId]);
+  }, [messages, callStatus, feedbackId, interviewId, router, type, userId]);
 
   const handleCall = async () => {
     setCallStatus(CallStatus.CONNECTING);
