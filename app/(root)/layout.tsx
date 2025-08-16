@@ -1,23 +1,16 @@
-import { isAuthenticated } from "@/lib/actions/auth.action";
-import Image from "next/image";
-import Link from "next/link";
+import { getCurrentUser } from "@/lib/actions/auth.action";
+import Navbar from "@/components/Navbar";
 import { redirect } from "next/navigation";
 import React from "react";
 
 const RootLayout = async ({ children }: { children: React.ReactNode }) => {
-  const isUserAuthenticated = await isAuthenticated();
+  const user = await getCurrentUser();
 
-  if (!isUserAuthenticated) redirect("/sign-in");
+  if (!user) redirect("/sign-in");
 
   return (
     <div className="root-layout">
-      <nav>
-        <Link href="/" className="flex items-center gap-2">
-          <Image src="/logo.svg" alt="logo" width={38} height={32} />
-          <h2 className="text-primary-100">Interview Prep</h2>
-        </Link>
-      </nav>
-
+      <Navbar user={user} />
       {children}
     </div>
   );

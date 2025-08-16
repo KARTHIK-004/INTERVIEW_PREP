@@ -31,6 +31,7 @@ const authFormSchema = (type: FormType) => {
 
 const AuthForm = ({ type }: { type: FormType }) => {
   const router = useRouter();
+  const [isLoading, setIsLoading] = React.useState(false);
 
   const formSchema = authFormSchema(type);
   const form = useForm<z.infer<typeof formSchema>>({
@@ -44,6 +45,7 @@ const AuthForm = ({ type }: { type: FormType }) => {
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     try {
+      setIsLoading(true);
       if (type === "sign-up") {
         const { name, email, password } = data;
 
@@ -93,6 +95,8 @@ const AuthForm = ({ type }: { type: FormType }) => {
     } catch (error) {
       console.log(error);
       toast.error(`There was an error: ${error}`);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -139,8 +143,14 @@ const AuthForm = ({ type }: { type: FormType }) => {
               type="password"
             />
 
-            <Button className="btn" type="submit">
-              {isSignIn ? "Sign In" : "Create an Account"}
+            <Button className="btn" type="submit" disabled={isLoading}>
+              {isLoading ? (
+                <>Loading...</>
+              ) : isSignIn ? (
+                "Sign In"
+              ) : (
+                "Create an Account"
+              )}
             </Button>
           </form>
         </Form>
